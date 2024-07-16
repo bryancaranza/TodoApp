@@ -4,11 +4,31 @@ import { ROUTE } from "./routing";
 import { Routes } from "react-router-dom";
 import Wrapper from "@/layouts/Wrapper";
 
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
-const GetStarted = lazy(() => import("@/pages/GetStarted"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
-const CreateTask = lazy(() => import("@/pages/CreateTask"));
-const ViewTask = lazy(() => import("@/pages/ViewTask"));
+const Dashboard = lazy(() => {
+  return new Promise((resolve: any) => {
+    setTimeout(() => resolve(import("@/pages/Dashboard")), 1500);
+  });
+});
+const GetStarted = lazy(() => {
+  return new Promise((resolve: any) => {
+    setTimeout(() => resolve(import("@/pages/GetStarted")), 1500);
+  });
+});
+const NotFound = lazy(() => {
+  return new Promise((resolve: any) => {
+    setTimeout(() => resolve(import("@/pages/NotFound")), 1500);
+  });
+});
+const CreateTask = lazy(() => {
+  return new Promise((resolve: any) => {
+    setTimeout(() => resolve(import("@/pages/CreateTask")), 1500);
+  });
+});
+const ViewTask = lazy(() => {
+  return new Promise((resolve: any) => {
+    setTimeout(() => resolve(import("@/pages/ViewTask")), 1500);
+  });
+});
 
 const RouteElements = () => {
   return (

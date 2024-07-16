@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ROUTE } from "@/routes/routing";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { DatePicker } from "@/components/custom/DatePicker";
 import { addDays } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,31 +17,32 @@ const ViewTask = () => {
   const [selectedTask, setSelectedTask] = useState<TaskDetails>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(
-    addDays(new Date(), 7)
-  );
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [task, setTask] = useState<Task>({ id: "", task: "", done: false });
 
   const ls = localStorage.getItem("tasks");
+  const navigate = useNavigate();
 
   const params = useParams();
 
   useEffect(() => {
     const lsDetails: TaskDetails[] = JSON.parse(ls!) || [];
-
     const selectedItem = lsDetails.filter(
-      (selected) => selected.id === params.id
+      (selected) => selected?.id === params.id
     )?.[0];
-    setTitle(selectedItem.title);
-    setDescription(selectedItem.description);
-    setStartDate(new Date(selectedItem.startDate));
-    setEndDate(new Date(selectedItem.endDate));
-    setTasks(selectedItem.tasks);
-    setSelectedTask(selectedItem);
 
-    console.log(selectedItem);
+    if (!selectedItem) {
+      return navigate("*");
+    }
+
+    setTitle(selectedItem?.title || "");
+    setDescription(selectedItem?.description || "");
+    setStartDate((selectedItem?.startDate as Date) || new Date());
+    setEndDate((selectedItem?.endDate as Date) || addDays(new Date(), 7));
+    setTasks(selectedItem?.tasks);
+    setSelectedTask(selectedItem);
   }, [ls]);
 
   return (
@@ -94,7 +95,7 @@ const ViewTask = () => {
         <div className="rounded-md flex flex-col gap-2 px-4 py-2 shadow-md bg-white">
           <p className="text-[10px] font-semibold text-gray-500">Task List</p>
           <div className="flex flex-col gap-2">
-            {tasks.map((_) => {
+            {tasks?.map((_) => {
               return (
                 <div key={_.id} className="flex justify-between items-center">
                   <div className="flex items-center space-x-2  py-1">
@@ -145,7 +146,7 @@ const ViewTask = () => {
           <div className="flex flex-col gap-2">
             <Input
               className="w-full"
-              value={task?.task}
+              value={task?.task || ""}
               onChange={(e) =>
                 setTask({
                   id: Math.floor(100000 + Math.random() * 900000).toFixed(),
@@ -157,7 +158,7 @@ const ViewTask = () => {
             <Button
               variant="outline"
               className="w-full"
-              disabled={!task.task.length}
+              disabled={!task?.task.length}
               onClick={async () => {
                 const newTaskList: Task[] | undefined = tasks.concat(task);
                 await setTasks(

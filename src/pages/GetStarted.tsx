@@ -17,7 +17,7 @@ const GetStarted = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/home");
+      navigate(ROUTE.HOME);
     }
   }, [user]);
 
@@ -45,9 +45,11 @@ const GetStarted = () => {
             placeholder="Please enter your name"
           />
           <Button disabled={!name} onClick={onClick}>
-            <Link reloadDocument to={ROUTE.CREATE}>
-              <p>Let's get started</p>
-              <CaretRightIcon />
+            <Link reloadDocument to={ROUTE.HOME}>
+              <div className="flex gap-2">
+                <p>Let's get started</p>
+                <CaretRightIcon className="w-4" />
+              </div>
             </Link>
           </Button>
         </div>
